@@ -1,0 +1,419 @@
+@use 'sass:math';
+@use 'sass:map';
+@use 'sass:string';
+@use 'sass:color';
+@use 'sass:list';
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  width: 100%;
+  min-height: 100vh;
+  font-size: 62.5%;
+  color-scheme: dark;
+}
+body {
+  width: inherit;
+  min-height: 100%;
+  font-size: 1.6rem;
+  text-rendering: optimizeSpeed;
+  overflow-anchor: none;
+  overflow: hidden;
+  background: linear-gradient(19deg, #020008, #07001a);
+}
+
+.container {
+  position: relative;
+  --max-width: 114rem;
+  height: 100vh;
+  margin-inline-end: auto;
+  margin-inline-start: auto;
+  padding-inline: 2.75rem;
+  width: clamp(30rem, 77vw + 1rem, 114rem);
+  width: min(100% - 2.75rem, var(--max-width));
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(5 0 18), rgba(0, 0, 0, 0));
+
+  .WelcomeF8 {
+    position: absolute;
+    width: 58rem;
+    translate: -50%;
+    top: 10rem;
+    left: 50%;
+    text-align: center;
+  }
+
+  svg.diamond {
+    position: absolute;
+    width: 18rem;
+    rotate: 44deg;
+    left: calc(50% - 9rem);
+    bottom: 1%;
+  }
+}
+
+@keyframes opacity {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.2;
+  }
+  20%,
+  60% {
+    opacity: 1;
+  }
+}
+
+.panels {
+  position: absolute;
+  display: flex;
+  top: 345px;
+  left: 50%;
+  rotate: -1deg;
+  transform-style: preserve-3d;
+  animation: rotates 30s linear infinite;
+  & .panel {
+    position: absolute;
+    width: 10rem;
+    height: 10rem;
+    transform: translate(-50%, -50%) rotateY(var(--angle)) translateZ(334px);
+    overflow: hidden;
+
+    &::before {
+      content: 'Tổng kết khóa HTML CSS Pro, Chào mừng Khóa JavaScript Pro!';
+      position: absolute;
+      left: var(--left);
+      color: hsl(var(--hue), 75%, 75%);
+      font-size: 8rem;
+      width: max-content;
+    }
+    @for $i from 1 through 24 {
+      &:nth-child(#{$i}) {
+        --left: calc((90 * (#{$i} - 1)) * -1px);
+        --hue: calc(var(--i) * 15 * 1deg);
+        --angle: calc(var(--i) * 15 * 1deg);
+      }
+    }
+  }
+}
+
+@keyframes rotates {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-360deg);
+  }
+}
+
+.artillery-fire {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(10deg);
+}
+@function thuTrang($val) {
+  @return (math.random($val) + 15);
+}
+@mixin create-size($max-width, $circles, $i) {
+  span:nth-child(#{$i}) {
+    $width: thuTrang($max-width);
+    --width: #{$width}px;
+    --hue: #{math.random(360)}deg;
+    $circle: thuTrang($circles);
+    --circle: #{$circle * 0.075}px;
+  }
+}
+.bomb {
+  position: absolute;
+  left: calc(50% - 1rem);
+  bottom: 5%;
+  width: 16px;
+  height: 32px;
+  opacity: 0;
+  transform-style: preserve-3d;
+  perspective: 100rem;
+
+  &-1 {
+    --bomb: 5s;
+    --delay: 0.1s;
+    $max-width: 155;
+    $circles: 75;
+    @for $i from 1 through 40 {
+      @include create-size($max-width, $circles, $i);
+    }
+  }
+
+  &-2 {
+    --bomb: 5.2s;
+    --delay: 0.2s;
+    $max-width: 105;
+    $circles: 55;
+    @for $i from 1 through 40 {
+      @include create-size($max-width, $circles, $i);
+    }
+  }
+
+  &-3 {
+    --bomb: 5.4s;
+    --delay: 0.3s;
+    $max-width: 95;
+    $circles: 65;
+    @for $i from 1 through 40 {
+      @include create-size($max-width, $circles, $i);
+    }
+  }
+
+  &-4 {
+    --bomb: 5.6s;
+    --delay: 0.4s;
+    $max-width: 65;
+    $circles: 65;
+    @for $i from 1 through 40 {
+      @include create-size($max-width, $circles, $i);
+    }
+  }
+
+  & span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: var(--width);
+    transform-origin: left;
+    transform: rotate(calc(18deg * var(--i)));
+    transform-style: preserve-3d;
+    filter: hue-rotate(var(--hue));
+    &::after,
+    &::before {
+      transform-style: preserve-3d;
+      content: '';
+      position: absolute;
+      width: var(--circle);
+      height: var(--circle);
+      border-radius: 50%;
+      background: hsl(var(--hue), 100%, 58%);
+      box-shadow: 0 0 10px hsl(var(--hue), 100%, 58%);
+      transform: translateX(0) translateY(0) translateZ(0) scale(0.5);
+      animation: explode 4.6s cubic-bezier(0.23, 0.18, 0, 0.57);
+      animation-delay: var(--delay);
+    }
+    &::after {
+      animation: explode 4.8s cubic-bezier(0.23, 0.18, 0.27, 0.72);
+      animation-delay: calc(0.2 + var(--delay));
+    }
+  }
+}
+
+/* ================ */
+
+.controls {
+  position: absolute;
+  bottom: 6rem;
+  left: 50%;
+  translate: -50%;
+  display: inline-flex;
+  width: 15rem;
+  height: 16.2rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+
+  .pull_the_trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+
+    inset: 0;
+    padding: 0.4rem 1.6rem;
+    letter-spacing: 3px;
+    color: #b3b339;
+    font-size: x-large;
+    font-weight: 600;
+
+    z-index: var(--z-index, 1);
+    background: var(--bgr);
+    user-select: none;
+    cursor: pointer;
+    transition: 0.25s;
+  }
+}
+
+.container {
+  &:has(#trigger_1:checked) .trigger_2,
+  &:has(#trigger_2:checked) .trigger_3,
+  &:has(#trigger_3:checked) .trigger_4,
+  &:has(#trigger_4:checked) .trigger_1 {
+    --z-index: 9999;
+  }
+  .controls .pull_the_trigger:hover {
+    opacity: 0.8;
+    color: #76b339;
+  }
+  .controls label.pull_the_trigger:active {
+    color: red !important;
+  }
+}
+
+.artillery-fire:active .bomb,
+.artillery-fire:active .bomb > span::before,
+.artillery-fire:active .bomb > span::after {
+  animation: none;
+}
+
+.bomb {
+  animation: skyward var(--bomb) cubic-bezier(0.99, 0.92, 0.8, 0.87);
+}
+
+#artillery:has(#trigger_1:checked) .bomb {
+  &-1 {
+    --shoot-direction: -5vw;
+    --shoot-range: -92vh;
+    --filter: #fff;
+  }
+  &-2 {
+    --shoot-direction: 10vw;
+    --shoot-range: -92vh;
+    --filter: #ff5252;
+  }
+  &-3 {
+    --shoot-direction: -15vw;
+    --shoot-range: -82vh;
+    --filter: #4bf3ff;
+  }
+  &-4 {
+    --shoot-direction: 0;
+    --shoot-range: -68vh;
+    --filter: #4bf3ff;
+  }
+}
+#artillery:has(#trigger_2:checked) .bomb {
+  &-1 {
+    --shoot-direction: 5vw;
+    --shoot-range: -85vh;
+    --filter: #8490ff;
+  }
+  &-2 {
+    --shoot-direction: 2vw;
+    --shoot-range: -45vh;
+    --filter: #ed94ff;
+  }
+  &-3 {
+    --shoot-direction: 9vw;
+    --shoot-range: -80vh;
+    --filter: #d2ffad;
+  }
+  &-4 {
+    --shoot-direction: -5vw;
+    --shoot-range: -90vh;
+    --filter: #ff7b7b;
+  }
+}
+#artillery:has(#trigger_3:checked) .bomb {
+  &-1 {
+    --shoot-direction: 15vw;
+    --shoot-range: -90vh;
+    --filter: #fc9aff;
+  }
+  &-2 {
+    --shoot-direction: 10vw;
+    --shoot-range: -70vh;
+    --filter: #ff8f8f;
+  }
+  &-3 {
+    --shoot-direction: 16vw;
+    --shoot-range: -50vh;
+    --filter: #fc9aff;
+  }
+  &-4 {
+    --shoot-direction: 5vw;
+    --shoot-range: -90vh;
+    --filter: #b6d6ff;
+  }
+}
+
+#artillery:has(#trigger_4:checked) .bomb {
+  &-1 {
+    --shoot-direction: -15vw;
+    --shoot-range: -90vh;
+    --filter: #fc9aff;
+  }
+  &-2 {
+    --shoot-direction: -12vw;
+    --shoot-range: -80vh;
+    --filter: #ff8f8f;
+  }
+  &-3 {
+    --shoot-direction: -5vw;
+    --shoot-range: -75vh;
+    --filter: #caffba;
+  }
+
+  &-4 {
+    --shoot-direction: -1vw;
+    --shoot-range: -60vh;
+    --filter: #b6d6ff;
+  }
+}
+@keyframes skyward {
+  0% {
+    opacity: 0;
+    background: url(./Rocket.png) no-repeat center/contain;
+  }
+  15% {
+    translate: var(--shoot-direction) var(--shoot-range) 100px;
+    opacity: 1;
+    filter: drop-shadow(0 0 66px var(--filter, #ff53f4));
+  }
+  25% {
+    background: none;
+    filter: drop-shadow(0 0 99px var(--filter, #ff53f4));
+  }
+  60% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 99px var(--filter, #ff53f4));
+  }
+  80% {
+    opacity: 0;
+    translate: var(--shoot-direction) -40vh 300px;
+    background: none;
+  }
+  100% {
+    opacity: 0;
+    background: url(./Rocket.png) no-repeat center/contain;
+  }
+}
+
+@keyframes explode {
+  0% {
+    filter: hue-rotate(var(--hue));
+    transform: translateX(0) translateY(0) translateZ(0) scale(0);
+    opacity: 0;
+  }
+  15% {
+    transform: translateX(10px) translateY(0) translateZ(0) scale(0.1);
+    opacity: 0.2;
+  }
+  30% {
+    transform: translateX(var(--width)) translateY(0) translateZ(0) scale(1.2);
+    opacity: 1;
+  }
+  90% {
+    transform: translateX(calc(var(--width) * 1.25)) translateY(0) translateZ(0)
+      scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    filter: hue-rotate(calc(var(--hue) * 26));
+    transform: translateX(100px) translateY(0) translateZ(0) scale(0);
+    opacity: 0;
+  }
+}
+
+
+  
